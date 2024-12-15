@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
 import IconList from './components/IconCard/IconList';
 import SearchBar from './components/SearchBar/SearchBar';
 import SortOptions from './components/SortOptions/SortOptions';
 import ThemeToggle from './components/ThemeToggle/ThemeToggle';
 import AddIconModal from './components/AddIcon/AddIconModal';
-import ToggleButton from './ToggleButton/ToggleButton';
+import ToggleButton from './components/ToggleButton';
 import { Button, Container, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
-import './App.css'; // Імпортуємо CSS файл
+import './App.css';
 
 const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -15,7 +16,16 @@ const App = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [open, setOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const icons = useSelector((state) => state.icons.icons);
+  const icons = useSelector((state) => state.icons);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    axios.get('/icons')
+      .then(response => {
+        dispatch({ type: 'SET_ICONS', payload: response.data });
+      })
+      .catch(error => console.log(error));
+  }, [dispatch]);
 
   const filteredIcons = icons.filter((icon) =>
     icon.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
