@@ -13,3 +13,7 @@ export const editIcon = (iconData) => ({
   type: 'EDIT_ICON',
   payload: iconData,
 });
+
+export const setIcons = (icons) => ({ 
+  type: 'SET_ICONS', 
+  payload: icons, });
